@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add User</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-background centered-flex">
+    <div class="content-card form-container">
+        <h2>Add User</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="{{ 'flash-success' if category == 'success' else 'flash-error' }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if error %}
+            <p class="flash-error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" class="card-form">
+            <label>Username</label>
+            <input type="text" name="username" required>
+
+            <label>Email</label>
+            <input type="email" name="email" required>
+
+            <label>Password</label>
+            <input type="password" name="password" required>
+
+            <label>Role</label>
+            <select name="role" required onchange="toggleDropdown(this.value)">
+                <option value="" disabled selected>-- Select Role --</option>
+                <option value="admin">Admin</option>
+                <option value="canteen">Canteen</option>
+                <option value="ngo">NGO</option>
+            </select>
+
+            <div id="canteenSelect" style="display:none;">
+                <label>Canteen</label>
+                <select name="canteen_id">
+                    {% for c in canteens %}
+                        <option value="{{ c.canteen_id }}">{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="ngoSelect" style="display:none;">
+                <label>NGO</label>
+                <select name="ngo_id">
+                    {% for n in ngos %}
+                        <option value="{{ n.ngo_id }}">{{ n.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary">Add User</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleDropdown(role) {
+            document.getElementById("canteenSelect").style.display = (role === "canteen") ? "block" : "none";
+            document.getElementById("ngoSelect").style.display = (role === "ngo") ? "block" : "none";
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.querySelector('select[name="role"]');
+            if (roleSelect.value) {
+                toggleDropdown(roleSelect.value);
+            }
+        });
+    </script>
+</body>
+</html>

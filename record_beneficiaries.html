@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Record Beneficiaries</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-background">
+    <div class="navbar">
+        <div class="navbar-left">Record Impact</div>
+        <div class="navbar-right">
+            <a href="{{ url_for('ngo_dashboard') }}" class="navbar-link">Back to Dashboard</a>
+        </div>
+    </div>
+    <div class="login-wrapper">
+        <div class="content-card form-container">
+            <h2>Report Donation Impact</h2>
+            <p style="text-align: center; margin-top: -10px; margin-bottom: 20px;">Log how many people were served by a completed donation.</p>
+            
+            <form method="POST" class="card-form">
+                <label for="donation_id">Select Completed Donation</label>
+                <select id="donation_id" name="donation_id" required>
+                    <option value="" disabled selected>-- Select a donation to report on --</option>
+                    {% for donation in completed_donations %}
+                        <option value="{{ donation.donation_id }}">
+                            {{ donation.item_name }} from {{ donation.canteen_name }} on {{ donation.approved_time.strftime('%b %d') }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="people_served">Number of People Served</label>
+                <input type="number" id="people_served" name="people_served" placeholder="e.g., 50" required min="1">
+
+                <label for="location">Distribution Location (Optional)</label>
+                <input type="text" id="location" name="location" placeholder="e.g., City Park Community Shelter">
+
+                <button type="submit" class="btn-primary">Submit Impact Report</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

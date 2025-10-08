@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Food Item</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-background">
+    <div class="navbar">
+        <div class="navbar-left">Edit Food Item</div>
+        <div class="navbar-right">
+            <a href="{{ url_for('canteen_dashboard') }}" class="navbar-link">Back to Dashboard</a>
+        </div>
+    </div>
+    <div class="login-wrapper">
+        <div class="content-card form-container">
+            <h2>Edit '{{ food.item_name }}'</h2>
+            <form method="POST" class="card-form">
+                <label for="item_name">Item Name</label>
+                <input type="text" id="item_name" name="item_name" value="{{ food.item_name }}" required>
+
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="Vegetarian" {% if food.category == 'Vegetarian' %}selected{% endif %}>Vegetarian</option>
+                    <option value="Non-Vegetarian" {% if food.category == 'Non-Vegetarian' %}selected{% endif %}>Non-Vegetarian</option>
+                    <option value="Beverage" {% if food.category == 'Beverage' %}selected{% endif %}>Beverage</option>
+                    <option value="Bakery" {% if food.category == 'Bakery' %}selected{% endif %}>Bakery</option>
+                    <option value="Other" {% if food.category == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex-grow: 1;">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" value="{{ food.quantity }}" required min="1">
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <label for="unit">Unit</label>
+                        <input type="text" id="unit" name="unit" value="{{ food.unit }}" required>
+                    </div>
+                </div>
+
+                <label for="expiry_time">Expiry Date & Time</label>
+                <input type="datetime-local" id="expiry_time" name="expiry_time" value="{{ food.expiry_time.strftime('%Y-%m-%dT%H:%M') }}" required>
+                
+                <label for="notes">Notes (Optional)</label>
+                <textarea id="notes" name="notes" rows="3" style="width: 100%; box-sizing: border-box; padding: 8px;">{{ food.notes or '' }}</textarea>
+
+                <button type="submit" class="btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

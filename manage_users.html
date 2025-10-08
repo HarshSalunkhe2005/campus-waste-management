@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="table-body">
+    <div class="navbar">
+        <div class="navbar-left">Admin - Manage Users</div>
+        <div class="navbar-right">
+            <a href="{{ url_for('admin_dashboard') }}" class="navbar-link">Back</a>
+        </div>
+    </div>
+
+    <div class="welcome"><h1>Manage Users</h1></div>
+
+    <div class="table-container">
+        <form method="POST" id="manageUsersForm">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>New Password</th>
+                        <th>Role</th>
+                        <th>Associated (Canteen/NGO)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>{{ u.user_id }}</td>
+                        <td><input type="text" name="username_{{ u.user_id }}" value="{{ u.username }}" required></td>
+                        <td><input type="email" name="email_{{ u.user_id }}" value="{{ u.email }}" required></td>
+                        <td><input type="password" name="password_{{ u.user_id }}" placeholder="Leave blank to keep current"></td>
+                        <td>
+                            <select name="role_{{ u.user_id }}" onchange="toggleRefSelect(this, '{{ u.user_id }}')">
+                                <option value="admin" {% if u.role_name == 'admin' %}selected{% endif %}>Admin</option>
+                                <option value="canteen" {% if u.role_name == 'canteen' %}selected{% endif %}>Canteen</option>
+                                <option value="ngo" {% if u.role_name == 'ngo' %}selected{% endif %}>NGO</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="canteen_id_{{ u.user_id }}" class="ref-select-canteen-{{ u.user_id }}" {% if u.role_name != 'canteen' %}hidden{% endif %}>
+                                {% for c in canteens %}
+                                <option value="{{ c.canteen_id }}" {% if u.ref_id == c.canteen_id %}selected{% endif %}>{{ c.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="ngo_id_{{ u.user_id }}" class="ref-select-ngo-{{ u.user_id }}" {% if u.role_name != 'ngo' %}hidden{% endif %}>
+                                {% for n in ngos %}
+                                <option value="{{ n.ngo_id }}" {% if u.ref_id == n.ngo_id %}selected{% endif %}>{{ n.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <button type="submit" name="edit" value="{{ u.user_id }}">Save</button>
+                            <button type="submit" name="delete" value="{{ u.user_id }}" onclick="return confirm('Are you sure you want to delete the user \'{{ u.username }}\'?')">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+
+    <script>
+        function toggleRefSelect(roleSelect, userId) {
+            const role = roleSelect.value;
+            const canteenSelect = document.querySelector('.ref-select-canteen-' + userId);
+            const ngoSelect = document.querySelector('.ref-select-ngo-' + userId);
+
+            // Use the 'hidden' attribute instead of style.display
+            canteenSelect.hidden = true;
+            ngoSelect.hidden = true;
+
+            if (role === 'canteen') {
+                canteenSelect.hidden = false;
+            } else if (role === 'ngo') {
+                ngoSelect.hidden = false;
+            }
+        }
+    </script>
+</body>
+</html>

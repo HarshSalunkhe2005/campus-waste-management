@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Donation History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-background">
+    <div class="navbar">
+        <div class="navbar-left">My Donation History</div>
+        <div class="navbar-right">
+            <a href="{{ url_for('ngo_dashboard') }}" class="navbar-link">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="welcome">
+        <h1>My Requests & Donations</h1>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Food Item</th>
+                    <th>Canteen</th>
+                    <th>Request Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in history %}
+                <tr>
+                    <td>{{ item.item_name }}</td>
+                    <td>{{ item.canteen_name }}</td>
+                    <td>{{ item.request_time.strftime('%b %d, %Y at %I:%M %p') }}</td>
+                    <td>
+                        <span class="status-text status-{{ item.status | lower }}">{{ item.status }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not history %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 20px;">
+                        You have not made any donation requests yet.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

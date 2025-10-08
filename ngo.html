@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NGO Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-background">
+    <div class="navbar">
+        <div class="navbar-left">
+            NGO Dashboard: {{ ngo_name | default('My NGO') }}
+        </div>
+        <div class="navbar-right">
+            <span>Welcome, {{ user.username }}</span>
+            <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a>
+        </div>
+    </div>
+
+    <div class="welcome">
+        <h1>Available Food for Donation</h1>
+    </div>
+
+    <div class="button-container" style="margin-bottom: 30px;">
+        <a href="{{ url_for('ngo_donation_history') }}" class="action-button">View Donation History</a>
+        <a href="{{ url_for('ngo_record_beneficiaries') }}" class="action-button">Record Beneficiaries</a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Canteen</th>
+                    <th>Quantity</th>
+                    <th>Expires At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for food in available_food %}
+                <tr>
+                    <td>{{ food.item_name }}</td>
+                    <td>{{ food.canteen_name }}</td>
+                    <td>{{ food.quantity }} {{ food.unit }}</td>
+                    <td>{{ food.expiry_time.strftime('%b %d, %Y at %I:%M %p') }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('request_pickup') }}">
+                            <input type="hidden" name="food_id" value="{{ food.food_id }}">
+                            <button type="submit" class="btn-primary">Request Pickup</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% if not available_food %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px;">
+                        There are currently no food items available for donation.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

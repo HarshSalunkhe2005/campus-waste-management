@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-background">
+
+    <div class="navbar">
+        <div class="navbar-left">
+            Campus Waste Management System
+        </div>
+        <div class="navbar-right">
+            </div>
+    </div>
+
+    <div class="login-wrapper">
+        <div class="content-card login-container">
+            <h2>Login</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <p class="{{ 'flash-success' if category == 'success' else 'flash-error' }}">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if error %}
+                <p class="flash-error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" class="card-form">
+                <label for="username">Username</label>
+                <input type="text" name="username" required>
+                
+                <label for="password">Password</label>
+                <input type="password" name="password" required>
+                
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

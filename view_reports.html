@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Waste Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="table-body">
+    <div class="navbar">
+        <div class="navbar-left">Admin - Waste Reports</div>
+        <div class="navbar-right">
+            <a href="{{ url_for('admin_dashboard') }}" class="navbar-link">Back</a>
+        </div>
+    </div>
+    <div class="welcome"><h1>Waste Reports</h1></div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Food</th><th>Reporter</th><th>Reason</th><th>Quantity</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+                {% for r in reports %}
+                <tr>
+                    <td>{{ r.report_id }}</td>
+                    <td>{{ r.item_name }}</td>
+                    <td>{{ r.reporter }}</td>
+                    <td>{{ r.reason }}</td>
+                    <td>{{ r.quantity_wasted }}</td>
+                    <td>{{ r.report_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,204 @@
+/* =================================
+   GENERAL & LAYOUT HELPERS
+   ================================= */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.page-background {
+    background: linear-gradient(to bottom right, #dbeafe, #e0ecfb);
+    min-height: 100vh;
+}
+
+.centered-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* =================================
+   REUSABLE COMPONENTS
+   ================================= */
+
+/* --- Card for forms and other content --- */
+.content-card {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* --- Form elements inside a card --- */
+.card-form label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    text-align: left;
+}
+.card-form input,
+.card-form select {
+    padding: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+/* --- Primary button for forms --- */
+.btn-primary {
+    padding: 8px 16px;
+    margin-top: 10px;
+    border: none;
+    background-color: #1d4ed8;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.btn-primary:hover {
+    background-color: #2563eb;
+}
+
+/* =================================
+   PAGE-SPECIFIC STYLES
+   ================================= */
+
+/* --- Login & Add User Page --- */
+.login-container, .form-container {
+    width: 320px; /* Specific width for these cards */
+    text-align: center;
+}
+
+/* --- Navbar --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #004a99;
+    padding: 15px 30px;
+    color: white;
+}
+.navbar-left { font-weight: bold; font-size: 28px; }
+.navbar-right { position: relative; display: flex; align-items: center; }
+.navbar-link { color: white; text-decoration: none; margin-left: 15px; }
+.navbar-link:hover { text-decoration: underline; }
+
+/* --- Navbar Dropdown --- */
+.dropdown { position: relative; display: inline-block; }
+.dropbtn {
+    background-color: #004a99;
+    color: white;
+    border: 1px solid white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+.dropdown-content a { color: black; padding: 10px 14px; text-decoration: none; display: block; }
+.dropdown-content a:hover { background-color: #f1f1f1; }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* --- Dashboard Welcome & Buttons --- */
+.welcome { text-align: center; margin: 50px 0 30px; }
+.welcome h1 { font-size: 36px; font-weight: bold; color: #1e293b; }
+
+.button-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; padding: 0 20px; }
+.action-button {
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #004a99;
+    background-color: white;
+    border: 2px solid #004a99;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    text-decoration: none;
+}
+.action-button:hover { background-color: #004a99; color: white; }
+
+/* --- Centered Table Pages --- */
+.table-container {
+    background-color: white;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+    overflow-x: auto;
+}
+.table-container table { width: 100%; border-collapse: collapse; }
+.table-container th,
+.table-container td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: middle;
+}
+.table-container th { background-color: #1d4ed8; color: white; }
+.table-container tr:nth-child(even) { background-color: #f9f9f9; }
+.table-container input,
+.table-container select {
+    padding: 6px;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 120px;
+}
+
+/* --- Flash Message Styling --- */
+.flash-error {
+    color: red;
+    font-weight: bold;
+}
+
+.flash-success {
+    color: green;
+    font-weight: bold;
+}
+
+/* --- Helper for centering login page content --- */
+.login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90vh; /* Adjust as needed */
+}
+
+/* --- Expiry Alert Styling --- */
+.expiry-warning {
+    background-color: #fff3cd !important; /* A light yellow */
+}
+.expiry-critical {
+    background-color: #f8d7da !important; /* A light red */
+}
+
+/* --- Table Row Highlighting --- */
+.highlight-row {
+    background-color: #dbeafe !important;
+    font-weight: bold;
+}
+
+/* --- Status Text Styling --- */
+.status-text {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.status-available {
+    color: green;
+}
+.status-requested {
+    color: orange;
+}
+.status-donated, .status-expired {
+    color: red; /* Covers multiple 'red' cases */
+}
