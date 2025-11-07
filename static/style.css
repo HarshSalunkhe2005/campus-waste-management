@@ -1,0 +1,416 @@
+/* Custom CSS for Campus Food Waste Tracker */
+:root {
+    --primary-green: #198754;
+    --dark-green: #146c43;
+    --light-green: #d1e7dd;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main { flex: 1; }
+
+.navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.navbar-brand { font-weight: bold; font-size: 1.3rem; }
+.navbar-brand i { font-size: 1.5rem; margin-right: 5px; }
+
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+    color: white;
+    padding: 80px 0;
+    text-align: center;
+}
+
+.hero-section h1 { font-size: 3rem; font-weight: bold; margin-bottom: 20px; }
+.hero-section p { font-size: 1.3rem; margin-bottom: 30px; }
+
+.dashboard-header {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+    color: white;
+    padding: 40px 0;
+    margin-bottom: 30px;
+    border-radius: 10px;
+}
+
+.dashboard-header h1 { font-weight: bold; margin-bottom: 10px; }
+.dashboard-header h4 { font-weight: normal; opacity: 0.9; }
+
+.stats-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.stats-card .card-body { padding: 25px; }
+.stats-card h6 { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; }
+.stats-card .display-4 { font-size: 3rem; font-weight: bold; margin: 0; }
+.stats-card i { font-size: 1.5rem; margin-right: 10px; }
+
+.card-blue { background: linear-gradient(135deg, #4e73df 0%, #2e59d9 100%); color: white; }
+.card-green { background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%); color: white; }
+.card-cyan { background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); color: white; }
+.card-yellow { background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%); color: white; }
+
+.action-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.action-section h5 { 
+    font-weight: bold; 
+    color: var(--primary-green); 
+    margin-bottom: 25px;
+    font-size: 1.2rem;
+}
+
+.action-btn {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    text-align: left;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn i {
+    margin-right: 12px;
+    font-size: 1.3rem;
+    vertical-align: middle;
+}
+
+.action-btn:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    text-decoration: none;
+}
+
+.action-btn::after {
+    content: '→';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    font-weight: bold;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover::after {
+    right: 15px;
+    opacity: 1;
+}
+
+.btn-add { 
+    background: linear-gradient(135deg, #1cc88a 0%, #17a673 100%); 
+    color: white; 
+}
+
+.btn-add:hover {
+    background: linear-gradient(135deg, #17a673 0%, #13855c 100%);
+    color: white;
+}
+
+.btn-view { 
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); 
+    color: white; 
+}
+
+.btn-view:hover {
+    background: linear-gradient(135deg, #224abe 0%, #1e3a8a 100%);
+    color: white;
+}
+
+.btn-manage { 
+    background: linear-gradient(135deg, #f6c23e 0%, #e0a800 100%); 
+    color: white; 
+}
+
+.btn-manage:hover {
+    background: linear-gradient(135deg, #e0a800 0%, #c79100 100%);
+    color: white;
+}
+
+.table-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.table thead th { background-color: var(--primary-green); color: white; font-weight: 600; }
+.table tbody tr:hover { background-color: var(--light-green); }
+
+.badge-available { background-color: #1cc88a; }
+.badge-donated { background-color: #36b9cc; }
+.badge-pending { background-color: #f6c23e; color: #333; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: #6c757d; }
+.empty-state i { font-size: 4rem; opacity: 0.5; }
+
+footer { margin-top: auto; background-color: #212529; }
+
+/* Form Cards */
+.form-card {
+    max-width: 500px;
+    margin: 50px auto;
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.form-card h2 {
+    color: var(--primary-green);
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.form-card h2 i {
+    margin-right: 10px;
+}
+
+.form-card .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.form-card .form-control,
+.form-card .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-card .form-control:focus,
+.form-card .form-select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.form-card .btn-primary {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%);
+    border: none;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-card .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+}
+
+.form-card .text-center a {
+    color: var(--primary-green);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.form-card .text-center a:hover {
+    text-decoration: underline;
+}
+
+/* Feature Cards */
+.feature-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.feature-card i {
+    font-size: 3rem;
+    color: var(--primary-green);
+    margin-bottom: 15px;
+}
+
+.feature-card h4 {
+    color: #212529;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Leaderboard Section */
+.leaderboard-section {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.leaderboard-section h5 {
+    font-weight: bold;
+    color: var(--primary-green);
+    margin-bottom: 20px;
+}
+
+.btn-leaderboard {
+    background: linear-gradient(135deg, #36b9cc 0%, #2a9faf 100%);
+    color: white;
+}
+
+.btn-leaderboard:hover {
+    background: linear-gradient(135deg, #2a9faf 0%, #258391 100%);
+    color: white;
+}
+
+/* Recent Donations Section */
+.recent-donations {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 30px;
+}
+
+.recent-donations h5 {
+    font-weight: bold;
+    color: var(--primary-green);
+    margin-bottom: 20px;
+}
+
+/* Badge Styles */
+.badge-expired {
+    background-color: #e74a3b;
+    color: white;
+}
+
+/* Container Improvements */
+.container,
+.container-fluid {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* Table Card Heading */
+.table-card h5 {
+    font-weight: bold;
+    color: var(--primary-green);
+    margin-bottom: 20px;
+}
+
+.table-card h4 {
+    font-weight: bold;
+    color: var(--primary-green);
+    margin-bottom: 20px;
+}
+
+/* Button Improvements */
+.btn-success {
+    background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(28, 200, 138, 0.3);
+}
+
+/* Icon Spacing */
+.bi {
+    margin-right: 5px;
+}
+
+/* Badge Secondary */
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+    padding: 5px 10px;
+    font-size: 0.85rem;
+}
+
+/* Table Improvements */
+.table thead th {
+    background-color: var(--primary-green);
+    color: white;
+    font-weight: 600;
+    border: none;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--light-green);
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Text Colors */
+.text-warning {
+    color: #f6c23e !important;
+}
+
+.text-success {
+    color: var(--primary-green) !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+    
+    .stats-card .display-4 {
+        font-size: 2rem;
+    }
+    
+    .form-card {
+        margin: 20px;
+        padding: 25px;
+    }
+    
+    .action-btn {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    
+    .dashboard-header h4 {
+        font-size: 1.1rem;
+    }
+}
