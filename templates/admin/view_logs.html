@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Audit Logs{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-journal-text"></i> Audit Logs</h1>
+        <h4>Review of all database changes</h4>
+    </div>
+
+    <div class="table-card">
+        <h5><i class="bi bi-list-task"></i> System Log</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Log ID</th>
+                        <th>Action</th>
+                        <th>Table Name</th>
+                        <th>Record ID</th>
+                        <th>Performed By (User ID)</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td>{{ log.log_id }}</td>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.table_name }}</td>
+                        <td>{{ log.record_id }}</td>
+                        <td>{{ log.performed_by }}</td>
+                        <td>{{ log.event_time.strftime('%b %d, %Y - %I:%M %p') }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not logs %}
+                    <tr>
+                        <td colspan="6" class="text-center">No audit logs found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

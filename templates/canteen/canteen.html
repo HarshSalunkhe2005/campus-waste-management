@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Canteen Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-shop"></i> Canteen Dashboard</h1>
+        <h4>{{ canteen_name | default('Your Canteen') }}</h4>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card card-blue">
+                <div class="card-body">
+                    <h6><i class="bi bi-list-ul"></i> Total Food Items</h6>
+                    <div class="display-4">{{ stats.total | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card card-green">
+                <div class="card-body">
+                    <h6><i class="bi bi-check-circle"></i> Available</h6>
+                    <div class="display-4">{{ stats.available | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card card-cyan">
+                <div class="card-body">
+                    <h6><i class="bi bi-heart"></i> Donated</h6>
+                    <div class="display-4">{{ stats.donated | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card card-yellow">
+                <div class="card-body">
+                    <h6><i class="bi bi-clock-history"></i> Pending Requests</h6>
+                    <div class="display-4">{{ stats.pending | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="leaderboard-section">
+                <h5><i class="bi bi-trophy"></i> Your Leaderboard Score</h5>
+                {% if leaderboard and leaderboard.total_items > 0 %}
+                <div class="text-center py-4">
+                    <h2 class="display-3 text-success">{{ "%.1f"|format(leaderboard.waste_score) }}%</h2>
+                    <p class="text-muted">Donation Rate</p>
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <h4>{{ leaderboard.total_items }}</h4>
+                            <small class="text-muted">Total Items</small>
+                        </div>
+                        <div class="col-6">
+                            <h4>{{ leaderboard.donated_items }}</h4>
+                            <small class="text-muted">Donated Items</small>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-clipboard-data"></i>
+                    <h5>No data available yet. Start adding food items!</h5>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="action-section">
+                <h5><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+                
+                <a href="{{ url_for('add_food') }}" class="action-btn btn-add">
+                    <i class="bi bi-plus-circle-fill"></i> Add New Food Item
+                </a>
+                
+                <a href="{{ url_for('canteen_food_list') }}" class="action-btn btn-view">
+                    <i class="bi bi-list-ul"></i> View All Food Items
+                </a>
+                
+                <a href="{{ url_for('manage_requests') }}" class="action-btn btn-manage">
+                    <i class="bi bi-clock-history"></i> Manage Pending Requests
+                </a>
+                
+                <a href="{{ url_for('file_waste_report') }}" class="action-btn btn-manage" style="background-color: #e74a3b; border-color: #e74a3b;">
+                    <i class="bi bi-trash3-fill"></i> File Waste Report
+                </a>
+                
+                <a href="{{ url_for('canteen_leaderboard') }}" class="action-btn btn-leaderboard">
+                    <i class="bi bi-trophy-fill"></i> View Leaderboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="recent-donations">
+        <h5><i class="bi bi-clock-history"></i> Recent Donations</h5>
+        {% if recent_donations %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>NGO</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for donation in recent_donations %}
+                    <tr>
+                        <td>{{ donation.item_name }}</td>
+                        <td>{{ donation.quantity }} {{ donation.unit }}</td>
+                        <td>{{ donation.ngo_name }}</td>
+                        <td>
+                            {% if donation.donated_time %}
+                                {{ donation.donated_time.strftime('%b %d, %Y') }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h5>No donations yet. Start making an impact!</h5>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Campus Food Waste Tracker{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <i class="bi bi-recycle" style="font-size: 5rem;"></i>
+        <h1>Campus Food Waste Tracker</h1>
+        <p>Reducing Food Waste, Feeding Communities</p>
+        <div class="mt-4">
+            <a href="{{ url_for('login') }}" class="btn btn-light btn-lg me-3">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-person-plus"></i> Register
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="feature-card">
+                    <i class="bi bi-shop"></i>
+                    <h4>Canteens</h4>
+                    <p>List surplus food items before they expire</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card">
+                    <i class="bi bi-heart"></i>
+                    <h4>NGOs</h4>
+                    <p>Request food for those in need</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card">
+                    <i class="bi bi-trophy"></i>
+                    <h4>Leaderboard</h4>
+                    <p>Track donation impact and rankings</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card">
+                    <i class="bi bi-graph-up"></i>
+                    <h4>Analytics</h4>
+                    <p>Monitor waste reduction progress</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

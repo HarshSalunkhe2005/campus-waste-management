@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Donation History{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-clock-history"></i> Donation History</h1>
+        <h4>Past Donations</h4>
+    </div>
+
+    <div class="table-card">
+        <h5><i class="bi bi-archive"></i> Completed & Approved Requests</h5>
+        {% if history %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Food Item</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Canteen</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                    <tr>
+                        <td><strong>{{ item.item_name }}</strong></td>
+                        <td><span class="badge bg-secondary">{{ item.category }}</span></td>
+                        <td>{{ item.quantity }} {{ item.unit }}</td>
+                        <td><i class="bi bi-shop"></i> {{ item.canteen_name }}</td>
+                        <td>
+                            <span class="status-text status-{{ item.status | lower }}">{{ item.status }}</span>
+                        </td>
+                        <td>
+                            {% if item.donated_time %}
+                                {{ item.donated_time.strftime('%b %d, %Y') }}
+                            {% else %}
+                                N/A (Pending)
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h5>No approved or completed donations yet.</h5>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

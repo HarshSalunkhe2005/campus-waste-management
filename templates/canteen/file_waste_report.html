@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}File Waste Report{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="form-card">
+        <h2><i class="bi bi-trash3-fill"></i> Report Wasted Food</h2>
+        
+        <form method="POST" action="{{ url_for('file_waste_report') }}" class="card-form">
+            <div class="mb-3">
+                <label for="food_item" class="form-label">Select Food Item</label>
+                <select class="form-select" id="food_item" name="food_id" required>
+                    <option value="" disabled selected>-- Select an item that was wasted --</option>
+                    {% for food in available_food %}
+                        <option value="{{ food.food_id }}">{{ food.item_name }} (Expires: {{ food.expiry_time.strftime('%b %d, %I:%M %p') }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="reason" class="form-label">Reason for Waste</label>
+                <select class="form-select" id="reason" name="reason" required>
+                    <option value="" disabled selected>-- Select a Reason --</option>
+                    <option value="spoilage">Spoilage</option>
+                    <option value="late_pickup">Late NGO Pickup</option>
+                    <option value="over_preparation">Over-preparation</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="quantity_wasted" class="form-label">Quantity Wasted</label>
+                <input type="number" class="form-control" id="quantity_wasted" name="quantity_wasted" placeholder="e.g., 5" required min="1">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Submit Report</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

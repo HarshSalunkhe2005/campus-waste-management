@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Add Food Item{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="form-card">
+        <h2><i class="bi bi-plus-circle"></i> Add New Food Item</h2>
+        <form method="POST" action="{{ url_for('add_food') }}">
+            <div class="mb-3">
+                <label for="item_name" class="form-label">Item Name</label>
+                <input type="text" class="form-control" id="item_name" name="item_name" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                    <option value="Beverage">Beverage</option>
+                    <option value="Bakery">Bakery</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="unit" class="form-label">Unit</label>
+                    <select class="form-select" id="unit" name="unit" required>
+                        <option value="plates">Plates</option>
+                        <option value="kg">Kilograms</option>
+                        <option value="liters">Liters</option>
+                        <option value="pieces">Pieces</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="expiry_time" class="form-label">Expiry Time</label>
+                <input type="datetime-local" class="form-control" id="expiry_time" name="expiry_time" required>
+            </div>
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes (Optional)</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Add Food Item</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

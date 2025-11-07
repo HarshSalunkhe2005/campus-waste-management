@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}NGO Dashboard{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-heart"></i> NGO Dashboard</h1>
+        <h4>Welcome, {{ ngo_name | default('Our NGO') }}</h4>
+    </div>
+    
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card card-blue">
+                <div class="card-body">
+                    <h6><i class="bi bi-clipboard"></i> Total Requests</h6>
+                    <div class="display-4">{{ stats.total_requests | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card card-green">
+                <div class="card-body">
+                    <h6><i class="bi bi-check-circle"></i> Approved</h6>
+                    <div class="display-4">{{ stats.approved | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card card-yellow">
+                <div class="card-body">
+                    <h6><i class="bi bi-clock"></i> Pending</h6>
+                    <div class="display-4">{{ stats.pending | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card card-cyan">
+                <div class="card-body">
+                    <h6><i class="bi bi-people"></i> Meals Received</h6>
+                    <div class="display-4">{{ stats.total_meals | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="action-section">
+                <h5><i class="bi bi-lightning-charge"></i> Quick Actions</h5>
+                
+                <a href="{{ url_for('ngo_food_list') }}" class="action-btn btn-view">
+                    <i class="bi bi-search"></i> Browse Available Food
+                </a>
+                
+                <a href="{{ url_for('ngo_donation_history') }}" class="action-btn btn-manage">
+                    <i class="bi bi-clipboard-check"></i> My Requests
+                </a>
+                
+                <a href="{{ url_for('ngo_record_beneficiaries') }}" class="action-btn btn-add">
+                    <i class="bi bi-person-heart"></i> Record Impact
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

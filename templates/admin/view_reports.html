@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Waste Reports{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-trash3-fill"></i> Waste Reports</h1>
+        <h4>Review of all filed waste reports</h4>
+    </div>
+
+    <div class="table-card">
+        <h5><i class="bi bi-list-task"></i> Report Log</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Food Item</th>
+                        <th>Reporter</th>
+                        <th>Reason</th>
+                        <th>Quantity Wasted</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reports %}
+                    <tr>
+                        <td>{{ r.report_id }}</td>
+                        <td>{{ r.item_name }}</td>
+                        <td>{{ r.reporter }}</td>
+                        <td>{{ r.reason }}</td>
+                        <td>{{ r.quantity_wasted }}</td>
+                        <td>{{ r.report_time.strftime('%b %d, %Y - %I:%M %p') }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not reports %}
+                    <tr>
+                        <td colspan="6" class="text-center">No waste reports found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

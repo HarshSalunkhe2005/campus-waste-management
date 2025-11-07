@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Login Activity{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-person-lines-fill"></i> Login Activity</h1>
+        <h4>Review of all user logins and logouts</h4>
+    </div>
+
+    <div class="table-card">
+        <h5><i class="bi bi-list-task"></i> Login Log</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Activity ID</th>
+                        <th>Username</th>
+                        <th>Login Time</th>
+                        <th>Logout Time</th>
+                        <th>IP Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in activities %}
+                    <tr>
+                        <td>{{ a.activity_id }}</td>
+                        <td>{{ a.username }}</td>
+                        <td>{{ a.login_time.strftime('%b %d, %Y - %I:%M %p') }}</td>
+                        <td>
+                            {% if a.logout_time %}
+                                {{ a.logout_time.strftime('%b %d, %Y - %I:%M %p') }}
+                            {% else %}
+                                <span class="badge badge-available">Active</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ a.ip_address }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not activities %}
+                    <tr>
+                        <td colspan="5" class="text-center">No login activities found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Impact Statistics{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-person-heart"></i> Impact Statistics</h1>
+        <h4>Review of all recorded beneficiary data</h4>
+    </div>
+
+    <div class="table-card">
+        <h5><i class="bi bi-list-task"></i> Beneficiary Log</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Beneficiary ID</th>
+                        <th>Donation ID</th>
+                        <th>People Served</th>
+                        <th>Location</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in impact_data %}
+                    <tr>
+                        <td>{{ i.beneficiary_id }}</td>
+                        <td>{{ i.donation_id }}</td>
+                        <td>{{ i.people_served }}</td>
+                        <td>{{ i.location }}</td>
+                        <td>{{ i.recorded_time.strftime('%b %d, %Y - %I:%M %p') }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not impact_data %}
+                    <tr>
+                        <td colspan="5" class="text-center">No impact data found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

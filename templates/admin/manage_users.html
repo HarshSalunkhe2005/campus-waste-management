@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Manage Users{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-people-fill"></i> Manage Users</h1>
+        <h4>Add, edit, or remove user accounts</h4>
+    </div>
+
+    <div class="table-card">
+        <h5><i class="bi bi-pencil-square"></i> All System Users</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>New Password</th>
+                        <th>Role</th>
+                        <th>Associated (Canteen/NGO)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <form method="POST" id="manageUsersForm">
+                        {% for u in users %}
+                        <tr>
+                            <td>{{ u.user_id }}</td>
+                            <td><input type="text" class="form-control form-control-sm" name="username_{{ u.user_id }}" value="{{ u.username }}" required></td>
+                            <td><input type="email" class="form-control form-control-sm" name="email_{{ u.user_id }}" value="{{ u.email }}" required></td>
+                            <td><input type="password" class="form-control form-control-sm" name="password_{{ u.user_id }}" placeholder="Leave blank to keep current"></td>
+                            <td>
+                                <select class="form-select form-select-sm" name="role_{{ u.user_id }}" onchange="toggleRefSelect(this, '{{ u.user_id }}')">
+                                    <option value="admin" {% if u.role_name == 'admin' %}selected{% endif %}>Admin</option>
+                                    <option value="canteen" {% if u.role_name == 'canteen' %}selected{% endif %}>Canteen</option>
+                                    <option value="ngo" {% if u.role_name == 'ngo' %}selected{% endif %}>NGO</option>
+                                    <option value="student" {% if u.role_name == 'student' %}selected{% endif %}>Student</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm" name="canteen_id_{{ u.user_id }}" id="ref-select-canteen-{{ u.user_id }}" {% if u.role_name != 'canteen' %}hidden{% endif %}>
+                                    {% for c in canteens %}
+                                    <option value="{{ c.canteen_id }}" {% if u.ref_id == c.canteen_id %}selected{% endif %}>{{ c.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <select class="form-select form-select-sm" name="ngo_id_{{ u.user_id }}" id="ref-select-ngo-{{ u.user_id }}" {% if u.role_name != 'ngo' %}hidden{% endif %}>
+                                    {% for n in ngos %}
+                                    <option value="{{ n.ngo_id }}" {% if u.ref_id == n.ngo_id %}selected{% endif %}>{{ n.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td class="text-nowrap">
+                                <button type="submit" name="edit" value="{{ u.user_id }}" class="btn btn-sm btn-primary"><i class="bi bi-save"></i> Save</button>
+                                <button type="submit" name="delete" value="{{ u.user_id }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete the user \'{{ u.username }}\'?')"><i class="bi bi-trash"></i> Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleRefSelect(roleSelect, userId) {
+        const role = roleSelect.value;
+        const canteenSelect = document.getElementById('ref-select-canteen-' + userId);
+        const ngoSelect = document.getElementById('ref-select-ngo-' + userId);
+
+        // Use the 'hidden' attribute instead of style.display
+        canteenSelect.hidden = true;
+        ngoSelect.hidden = true;
+
+        if (role === 'canteen') {
+            canteenSelect.hidden = false;
+        } else if (role === 'ngo') {
+            ngoSelect.hidden = false;
+        }
+    }
+</script>
+{% endblock %}

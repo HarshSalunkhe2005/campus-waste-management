@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="dashboard-header text-center">
+        <h1><i class="bi bi-shield-check"></i> Admin Dashboard</h1>
+        <h4>System Overview</h4>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-card card-blue">
+                <div class="card-body">
+                    <h6><i class="bi bi-people"></i> Total Users</h6>
+                    <div class="display-4">{{ total_users | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-card card-green">
+                <div class="card-body">
+                    <h6><i class="bi bi-list-ul"></i> Total Food Items</h6>
+                    <div class="display-4">{{ total_food | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-card card-cyan">
+                <div class="card-body">
+                    <h6><i class="bi bi-heart"></i> Total Donations</h6>
+                    <div class="display-4">{{ total_donations | default(0) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="action-section">
+                <h5><i class="bi bi-tools"></i> Admin Reports</h5>
+                
+                <a href="{{ url_for('view_reports') }}" class="action-btn btn-manage">
+                    <i class="bi bi-clipboard-check"></i> View Waste Reports
+                </a>
+                
+                <a href="{{ url_for('view_leaderboard') }}" class="action-btn btn-leaderboard">
+                    <i class="bi bi-trophy-fill"></i> View Full Leaderboard
+                </a>
+                
+                <a href="{{ url_for('impact') }}" class="action-btn btn-view">
+                    <i class="bi bi-graph-up"></i> View Impact Stats
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

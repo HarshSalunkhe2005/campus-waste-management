@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Edit Food Item{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="form-card">
+        <h2><i class="bi bi-pencil-square"></i> Edit '{{ food.item_name }}'</h2>
+        
+        <form method="POST" action="{{ url_for('edit_food', food_id=food.food_id) }}">
+            <div class="mb-3">
+                <label for="item_name" class="form-label">Item Name</label>
+                <input type="text" class="form-control" id="item_name" name="item_name" value="{{ food.item_name }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="Vegetarian" {% if food.category == 'Vegetarian' %}selected{% endif %}>Vegetarian</option>
+                    <option value="Non-Vegetarian" {% if food.category == 'Non-Vegetarian' %}selected{% endif %}>Non-Vegetarian</option>
+                    <option value="Beverage" {% if food.category == 'Beverage' %}selected{% endif %}>Beverage</option>
+                    <option value="Bakery" {% if food.category == 'Bakery' %}selected{% endif %}>Bakery</option>
+                    <option value="Other" {% if food.category == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" value="{{ food.quantity }}" min="1" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="unit" class="form-label">Unit</label>
+                    <input type="text" class="form-control" id="unit" name="unit" value="{{ food.unit }}" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="expiry_time" class="form-label">Expiry Time</label>
+                <input type="datetime-local" class="form-control" id="expiry_time" name="expiry_time" value="{{ food.expiry_time.strftime('%Y-%m-%dT%H:%M') }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes (Optional)</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3">{{ food.notes or '' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
