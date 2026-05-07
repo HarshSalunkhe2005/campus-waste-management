@@ -84,6 +84,8 @@ CREATE TABLE leaderboard (
   canteen_id INT NOT NULL UNIQUE,
   total_items INT DEFAULT 0,
   donated_items INT DEFAULT 0,
+  -- `waste_score` here represents donation efficiency percentage:
+  -- donated_items / total_items * 100.
   waste_score DECIMAL(6,3)
     GENERATED ALWAYS AS (
       CASE WHEN total_items = 0 THEN 0

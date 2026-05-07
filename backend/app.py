@@ -94,6 +94,15 @@ def verify_password(user, provided_password):
         print(f"Password hash verification failed for user_id={user.get('user_id')}: {err}")
         return False
 
+def is_strong_password(password):
+    return (
+        len(password) >= 8
+        and any(ch.islower() for ch in password)
+        and any(ch.isupper() for ch in password)
+        and any(ch.isdigit() for ch in password)
+        and any(not ch.isalnum() for ch in password)
+    )
+
 # =============================================================================
 # AUTH & GENERAL ROUTES
 # =============================================================================
@@ -186,6 +195,27 @@ def register():
 
 @app.route("/logout")
 def logout():
+    user_id = session.get("user_id")
+    if user_id:
+        try:
+            conn = get_db()
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE login_activity
+                SET logout_time = NOW()
+                WHERE activity_id = (
+                    SELECT activity_id FROM (
+                        SELECT activity_id
+                        FROM login_activity
+                        WHERE user_id = %s AND logout_time IS NULL
+                        ORDER BY login_time DESC
+                        LIMIT 1
+                    ) AS latest_activity
+                )
+            """, (user_id,))
+            cursor.close()
+        except mysql.connector.Error as err:
+            print(f"Failed to update logout_time for user_id={user_id}: {err}")
     session.clear()
     flash("You have been logged out.", "success")
     return redirect(url_for("index"))
@@ -268,6 +298,10 @@ def manage_users():
         elif "edit" in request.form:
             uid = request.form["edit"]
             username, email, password, role = request.form[f"username_{uid}"].strip(), request.form[f"email_{uid}"].strip(), request.form[f"password_{uid}"].strip(), request.form[f"role_{uid}"]
+            if password and not is_strong_password(password):
+                cursor.close()
+                flash("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.", "danger")
+                return redirect(url_for("manage_users"))
             ref_id = 0
             if role == "canteen": ref_id = request.form.get(f"canteen_id_{uid}")
             elif role == "ngo": ref_id = request.form.get(f"ngo_id_{uid}")
@@ -476,16 +510,46 @@ def manage_requests():
     conn, canteen_id = get_db(), session['ref_id']
     if request.method == 'POST':
         request_id, action = request.form['request_id'], request.form['action']
-        new_status = 'approved' if action == 'approve' else 'rejected'
+        if action not in {'approve', 'reject'}:
+            flash("Invalid action.", "danger")
+            return redirect(url_for('manage_requests'))
         cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT dr.request_id, dr.food_id, dr.status
+            FROM donation_request dr
+            JOIN food f ON dr.food_id = f.food_id
+            WHERE dr.request_id = %s AND f.canteen_id = %s
+        """, (request_id, canteen_id))
+        request_row = cursor.fetchone()
+        if not request_row:
+            cursor.close()
+            flash("Request not found for this canteen.", "danger")
+            return redirect(url_for('manage_requests'))
+        if request_row['status'] != 'pending':
+            cursor.close()
+            flash("This request has already been processed.", "warning")
+            return redirect(url_for('manage_requests'))
+
+        if action == 'approve':
+            cursor.execute("""
+                SELECT 1
+                FROM donation_request
+                WHERE food_id = %s
+                  AND status IN ('approved', 'completed')
+                  AND request_id != %s
+                LIMIT 1
+            """, (request_row['food_id'], request_id))
+            if cursor.fetchone():
+                cursor.close()
+                flash("This food item is already approved for another request.", "danger")
+                return redirect(url_for('manage_requests'))
+
+        new_status = 'approved' if action == 'approve' else 'rejected'
         cursor.execute("UPDATE donation_request SET status = %s, approved_by = %s, approved_time = NOW() WHERE request_id = %s",
                        (new_status, session['user_id'], request_id))
-        cursor.execute("SELECT food_id FROM donation_request WHERE request_id = %s", (request_id,))
-        result = cursor.fetchone()
-        if result:
-            food_id_to_update = result['food_id']
-            food_status_update = 'available' if action == 'reject' else 'approved'
-            cursor.execute("UPDATE food SET status = %s WHERE food_id = %s", (food_status_update, food_id_to_update,))
+        food_status_update = 'available' if action == 'reject' else 'donated'
+        cursor.execute("UPDATE food SET status = %s WHERE food_id = %s", (food_status_update, request_row['food_id']))
+        cursor.close()
         write_audit(conn, f"Request {request_id} was {new_status}", "donation_request", request_id, session.get("user_id"))
         flash(f"Request has been {new_status}.", "success")
         return redirect(url_for('manage_requests'))
