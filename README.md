@@ -134,4 +134,4 @@ Add screenshots here if publishing docs externally:
 
 ## Notes
 
-- Existing legacy plaintext user records (if any from older deployments) are upgraded to hashed passwords automatically on successful login.
+- This version expects hashed passwords in the `users` table (as provided by the schema seed).

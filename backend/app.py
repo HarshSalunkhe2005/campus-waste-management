@@ -79,27 +79,15 @@ def write_audit(conn, action_text, table_name, record_id, performed_by):
     except Exception as e:
         print(f"--- AUDIT LOG FAILED --- {e}")
 
-def verify_and_upgrade_password(conn, user, provided_password):
+def verify_password(user, provided_password):
     stored_password = user.get("password")
     if not stored_password:
         return False
 
     try:
-        if check_password_hash(stored_password, provided_password):
-            return True
+        return check_password_hash(stored_password, provided_password)
     except ValueError:
-        pass
-
-    if stored_password == provided_password:
-        update_cursor = conn.cursor()
-        update_cursor.execute(
-            "UPDATE users SET password = %s WHERE user_id = %s",
-            (generate_password_hash(provided_password), user["user_id"])
-        )
-        update_cursor.close()
-        return True
-
-    return False
+        return False
 
 # =============================================================================
 # AUTH & GENERAL ROUTES
@@ -117,7 +105,7 @@ def login():
         cursor.execute("SELECT u.user_id, u.username, u.password, u.ref_id, r.role_name FROM users u JOIN roles r ON u.role_id = r.role_id WHERE u.username = %s", (username,))
         user = cursor.fetchone()
         
-        if user and verify_and_upgrade_password(conn, user, password):
+        if user and verify_password(user, password):
             session.update(user_id=user["user_id"], username=user["username"], role=user["role_name"], ref_id=user["ref_id"])
             cursor.execute("INSERT INTO login_activity (user_id, ip_address) VALUES (%s,%s)", (user["user_id"], request.remote_addr))
             cursor.close()
@@ -145,7 +133,7 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        role_name = request.form['role']
+        role_name = request.form['role'].lower()
         allowed_registration_roles = {"canteen", "ngo"}
 
         if role_name not in allowed_registration_roles:
@@ -158,9 +146,14 @@ def register():
         elif role_name == 'ngo':
             ref_id = request.form.get('ngo_id')
 
-        if role_name in {"canteen", "ngo"} and not ref_id:
-            flash("Please select a valid organization.", "danger")
-            return redirect(url_for('register'))
+        if role_name in {"canteen", "ngo"}:
+            try:
+                ref_id = int(ref_id)
+                if ref_id <= 0:
+                    raise ValueError
+            except (TypeError, ValueError):
+                flash("Please select a valid organization.", "danger")
+                return redirect(url_for('register'))
 
         try:
             cursor.execute("SELECT role_id FROM roles WHERE role_name = %s", (role_name,))
