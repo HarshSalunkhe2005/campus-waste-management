@@ -15,7 +15,11 @@ app = Flask(
     template_folder=os.path.join(BASE_DIR, "templates"),
     static_folder=os.path.join(BASE_DIR, "static")
 )
-app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(32))
+if os.getenv("FLASK_SECRET_KEY"):
+    app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
+else:
+    print("WARNING: FLASK_SECRET_KEY is not set. A temporary key is being used.")
+    app.config["SECRET_KEY"] = secrets.token_hex(32)
 
 # -------------------------
 # DB Config & Management
@@ -86,7 +90,8 @@ def verify_password(user, provided_password):
 
     try:
         return check_password_hash(stored_password, provided_password)
-    except ValueError:
+    except ValueError as err:
+        print(f"Password hash verification failed for user_id={user.get('user_id')}: {err}")
         return False
 
 # =============================================================================
