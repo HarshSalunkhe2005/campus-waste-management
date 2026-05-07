@@ -153,24 +153,24 @@ VALUES
 ('Helping Hearts', 'Raj Mehta', '9898765432', 'helpinghearts@gmail.com', 'student_group');
 
 INSERT INTO users (username, password, email, role_id)
-VALUES ('admin1', 'admin@123', 'admin@sit.edu', 1);
+VALUES ('admin1', 'scrypt:32768:8:1$fPIVMNEqhJMSClDb$d1d9439c8901a5be72f3a7247a59b00d5ee901b623a68be3a0df559e6465e906f8803ef975f4527a8ad0d4378b31dd903cad279b63752ba5888ba800fc5bab54', 'admin@sit.edu', 1);
 
 INSERT INTO users (username, password, email, role_id, ref_id)
 VALUES 
-('canteen_central', 'canteen@123', 'centralcanteen@sit.edu', 2, 1),
-('canteen_hostel', 'canteen@123', 'hostelcanteen@sit.edu', 2, 2),
-('canteen_tech', 'canteen@123', 'techcafe@sit.edu', 2, 3);
+('canteen_central', 'scrypt:32768:8:1$RqsLXuQBxGCRzzZg$b869dc9a52bb2fc2c4deba755da9c03e6abed82a57759ca393d76d60ece211643178a360aac9f1b14974d555601662ab6aee8d257a62fb44b8cb501177277603', 'centralcanteen@sit.edu', 2, 1),
+('canteen_hostel', 'scrypt:32768:8:1$RqsLXuQBxGCRzzZg$b869dc9a52bb2fc2c4deba755da9c03e6abed82a57759ca393d76d60ece211643178a360aac9f1b14974d555601662ab6aee8d257a62fb44b8cb501177277603', 'hostelcanteen@sit.edu', 2, 2),
+('canteen_tech', 'scrypt:32768:8:1$RqsLXuQBxGCRzzZg$b869dc9a52bb2fc2c4deba755da9c03e6abed82a57759ca393d76d60ece211643178a360aac9f1b14974d555601662ab6aee8d257a62fb44b8cb501177277603', 'techcafe@sit.edu', 2, 3);
 
 INSERT INTO users (username, password, email, role_id, ref_id)
 VALUES 
-('ngo_feedinghands', 'ngo@123', 'feedinghands@gmail.com', 3, 1),
-('ngo_greenplate', 'ngo@123', 'greenplate@gmail.com', 3, 2),
-('ngo_helpinghearts', 'ngo@123', 'helpinghearts@gmail.com', 3, 3);
+('ngo_feedinghands', 'scrypt:32768:8:1$sUHr7RCaB94HT7nG$64cde9bc05f6f403881944108fce121e8c5f2ce2cf317fb9873133c7ccad3e355120f97fe866d2167618358552a3c85be3e0d58874822d845d0045632c28b1d3', 'feedinghands@gmail.com', 3, 1),
+('ngo_greenplate', 'scrypt:32768:8:1$sUHr7RCaB94HT7nG$64cde9bc05f6f403881944108fce121e8c5f2ce2cf317fb9873133c7ccad3e355120f97fe866d2167618358552a3c85be3e0d58874822d845d0045632c28b1d3', 'greenplate@gmail.com', 3, 2),
+('ngo_helpinghearts', 'scrypt:32768:8:1$sUHr7RCaB94HT7nG$64cde9bc05f6f403881944108fce121e8c5f2ce2cf317fb9873133c7ccad3e355120f97fe866d2167618358552a3c85be3e0d58874822d845d0045632c28b1d3', 'helpinghearts@gmail.com', 3, 3);
 
 INSERT INTO users (username, password, email, role_id)
 VALUES
-('student_raj', 'student@123', 'raj@student.edu', 4),
-('student_kavya', 'student@123', 'kavya@student.edu', 4);
+('student_raj', 'scrypt:32768:8:1$dYtmfreahTtXCm64$341a00fdab4623f222542dd548dccd3487ab6cc228bdfe58e02f53affd0c8fad91db29bc2fa81097fc1d2d05ba53bc97dde6ddd65db0bb40740d7a05097e9d16', 'raj@student.edu', 4),
+('student_kavya', 'scrypt:32768:8:1$dYtmfreahTtXCm64$341a00fdab4623f222542dd548dccd3487ab6cc228bdfe58e02f53affd0c8fad91db29bc2fa81097fc1d2d05ba53bc97dde6ddd65db0bb40740d7a05097e9d16', 'kavya@student.edu', 4);
 
 INSERT INTO food (canteen_id, item_name, category, quantity, unit, expiry_time, status)
 VALUES
