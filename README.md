@@ -18,7 +18,7 @@ The application includes role-based access control, audit logging, donation work
 - Food listing, expiry-aware views, and inventory updates
 - Donation request lifecycle (pending → approved/rejected → completed)
 - Waste reporting and impact tracking
-- Audit logs, login activity logs, and leaderboard metrics
+- Audit logs, login activity logs, and leaderboard donation-efficiency metrics (`waste_score`)
 
 ## Tech Stack
 
