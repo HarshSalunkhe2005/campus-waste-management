@@ -106,6 +106,9 @@ Open:
 http://localhost:5000
 ```
 
+> `python backend/app.py` uses Flask's development server and is intended for local development/testing only.  
+> For production deployment, run the app behind a production WSGI server (for example Gunicorn/uWSGI) and HTTPS reverse proxy.
+
 ## Default Sample Accounts (from DB seed)
 
 - Admin: `admin1`
