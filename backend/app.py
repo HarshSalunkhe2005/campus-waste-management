@@ -95,7 +95,13 @@ def verify_password(user, provided_password):
         return False
 
 def is_strong_password(password):
-    return len(password) >= 8
+    return (
+        len(password) >= 8
+        and any(ch.islower() for ch in password)
+        and any(ch.isupper() for ch in password)
+        and any(ch.isdigit() for ch in password)
+        and any(not ch.isalnum() for ch in password)
+    )
 
 # =============================================================================
 # AUTH & GENERAL ROUTES
@@ -208,8 +214,8 @@ def logout():
                 )
             """, (user_id,))
             cursor.close()
-        except mysql.connector.Error:
-            pass
+        except mysql.connector.Error as err:
+            print(f"Failed to update logout_time for user_id={user_id}: {err}")
     session.clear()
     flash("You have been logged out.", "success")
     return redirect(url_for("index"))
@@ -293,7 +299,8 @@ def manage_users():
             uid = request.form["edit"]
             username, email, password, role = request.form[f"username_{uid}"].strip(), request.form[f"email_{uid}"].strip(), request.form[f"password_{uid}"].strip(), request.form[f"role_{uid}"]
             if password and not is_strong_password(password):
-                flash("Password must be at least 8 characters long.", "danger")
+                cursor.close()
+                flash("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.", "danger")
                 return redirect(url_for("manage_users"))
             ref_id = 0
             if role == "canteen": ref_id = request.form.get(f"canteen_id_{uid}")
@@ -515,9 +522,11 @@ def manage_requests():
         """, (request_id, canteen_id))
         request_row = cursor.fetchone()
         if not request_row:
+            cursor.close()
             flash("Request not found for this canteen.", "danger")
             return redirect(url_for('manage_requests'))
         if request_row['status'] != 'pending':
+            cursor.close()
             flash("This request has already been processed.", "warning")
             return redirect(url_for('manage_requests'))
 
@@ -531,6 +540,7 @@ def manage_requests():
                 LIMIT 1
             """, (request_row['food_id'], request_id))
             if cursor.fetchone():
+                cursor.close()
                 flash("This food item is already approved for another request.", "danger")
                 return redirect(url_for('manage_requests'))
 
@@ -539,6 +549,7 @@ def manage_requests():
                        (new_status, session['user_id'], request_id))
         food_status_update = 'available' if action == 'reject' else 'donated'
         cursor.execute("UPDATE food SET status = %s WHERE food_id = %s", (food_status_update, request_row['food_id']))
+        cursor.close()
         write_audit(conn, f"Request {request_id} was {new_status}", "donation_request", request_id, session.get("user_id"))
         flash(f"Request has been {new_status}.", "success")
         return redirect(url_for('manage_requests'))
