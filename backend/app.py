@@ -1,4 +1,5 @@
 import os
+import secrets
 import mysql.connector
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g
 from datetime import datetime, timedelta
@@ -14,12 +15,15 @@ app = Flask(
     template_folder=os.path.join(BASE_DIR, "templates"),
     static_folder=os.path.join(BASE_DIR, "static")
 )
-app.secret_key = "supersecretkey"
+app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", secrets.token_hex(32))
 
 # -------------------------
 # DB Config & Management
 # -------------------------
-DB_HOST, DB_USER, DB_PASS, DB_NAME = "localhost", "root", "root", "campus_food_waste"
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASS = os.getenv("DB_PASS", "")
+DB_NAME = os.getenv("DB_NAME", "campus_food_waste")
 
 def get_db():
     if 'db' not in g:
@@ -40,32 +44,28 @@ def close_db(e=None):
 # -------------------------
 # Decorators
 # -------------------------
+def role_required(*allowed_roles):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not session.get("user_id"):
+                flash("Please log in to continue.", "warning")
+                return redirect(url_for("login"))
+            if session.get("role", "").lower() not in allowed_roles:
+                flash("You do not have permission to access this page.", "danger")
+                return redirect(url_for("login"))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
 def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("role", "").lower() != "admin":
-            flash("You do not have permission to access this page.", "danger")
-            return redirect(url_for("login"))
-        return f(*args, **kwargs)
-    return decorated_function
+    return role_required("admin")(f)
 
 def canteen_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("role", "").lower() != "canteen":
-            flash("You do not have permission to access this page.", "danger")
-            return redirect(url_for("login"))
-        return f(*args, **kwargs)
-    return decorated_function
+    return role_required("canteen")(f)
 
 def ngo_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("role", "").lower() != "ngo":
-            flash("You do not have permission to access this page.", "danger")
-            return redirect(url_for("login"))
-        return f(*args, **kwargs)
-    return decorated_function
+    return role_required("ngo")(f)
 
 # -------------------------
 # Helpers
@@ -78,6 +78,28 @@ def write_audit(conn, action_text, table_name, record_id, performed_by):
         cur.close()
     except Exception as e:
         print(f"--- AUDIT LOG FAILED --- {e}")
+
+def verify_and_upgrade_password(conn, user, provided_password):
+    stored_password = user.get("password")
+    if not stored_password:
+        return False
+
+    try:
+        if check_password_hash(stored_password, provided_password):
+            return True
+    except ValueError:
+        pass
+
+    if stored_password == provided_password:
+        update_cursor = conn.cursor()
+        update_cursor.execute(
+            "UPDATE users SET password = %s WHERE user_id = %s",
+            (generate_password_hash(provided_password), user["user_id"])
+        )
+        update_cursor.close()
+        return True
+
+    return False
 
 # =============================================================================
 # AUTH & GENERAL ROUTES
@@ -95,8 +117,7 @@ def login():
         cursor.execute("SELECT u.user_id, u.username, u.password, u.ref_id, r.role_name FROM users u JOIN roles r ON u.role_id = r.role_id WHERE u.username = %s", (username,))
         user = cursor.fetchone()
         
-        # Plaintext password check to match your new SQL file
-        if user and user['password'] == password:
+        if user and verify_and_upgrade_password(conn, user, password):
             session.update(user_id=user["user_id"], username=user["username"], role=user["role_name"], ref_id=user["ref_id"])
             cursor.execute("INSERT INTO login_activity (user_id, ip_address) VALUES (%s,%s)", (user["user_id"], request.remote_addr))
             cursor.close()
@@ -123,8 +144,13 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
-        password = request.form['password'] # Saving as plaintext
+        password = request.form['password']
         role_name = request.form['role']
+        allowed_registration_roles = {"canteen", "ngo"}
+
+        if role_name not in allowed_registration_roles:
+            flash("Invalid role selected.", "danger")
+            return redirect(url_for('register'))
         
         ref_id = 0
         if role_name == 'canteen':
@@ -132,12 +158,16 @@ def register():
         elif role_name == 'ngo':
             ref_id = request.form.get('ngo_id')
 
+        if role_name in {"canteen", "ngo"} and not ref_id:
+            flash("Please select a valid organization.", "danger")
+            return redirect(url_for('register'))
+
         try:
             cursor.execute("SELECT role_id FROM roles WHERE role_name = %s", (role_name,))
             role_id = cursor.fetchone()['role_id']
             
             cursor.execute("INSERT INTO users (username, email, password, role_id, ref_id) VALUES (%s, %s, %s, %s, %s)",
-                           (username, email, password, role_id, ref_id))
+                           (username, email, generate_password_hash(password), role_id, ref_id))
             flash("Registration successful! Please log in.", "success")
             return redirect(url_for('login'))
         except mysql.connector.Error as err:
@@ -206,7 +236,7 @@ def add_user():
         role_id = cursor.fetchone()["role_id"]
         
         try:
-            cursor.execute("INSERT INTO users (username, password, email, role_id, ref_id) VALUES (%s,%s,%s,%s,%s)", (username, password, email, role_id, ref_id))
+            cursor.execute("INSERT INTO users (username, password, email, role_id, ref_id) VALUES (%s,%s,%s,%s,%s)", (username, generate_password_hash(password), email, role_id, ref_id))
             new_user_id = cursor.lastrowid
             write_audit(conn, f"Added user '{username}'", "users", new_user_id, session.get("user_id"))
             flash("User added successfully.", "success")
@@ -249,7 +279,7 @@ def manage_users():
             params = [username, email, role_id, ref_id]
             if password:
                 query_parts.append(", password=%s")
-                params.append(password)
+                params.append(generate_password_hash(password))
             query_parts.append("WHERE user_id=%s")
             params.append(uid)
             cursor.execute(" ".join(query_parts), tuple(params))
@@ -261,7 +291,7 @@ def manage_users():
     canteens = cursor.fetchall()
     cursor.execute("SELECT ngo_id, name FROM ngo")
     ngos = cursor.fetchall()
-    cursor.execute("SELECT u.user_id, u.username, u.email, u.password, r.role_name, u.ref_id FROM users u JOIN roles r ON u.role_id = r.role_id ORDER BY u.user_id ASC")
+    cursor.execute("SELECT u.user_id, u.username, u.email, r.role_name, u.ref_id FROM users u JOIN roles r ON u.role_id = r.role_id ORDER BY u.user_id ASC")
     users = cursor.fetchall()
     cursor.close()
     return render_template("admin/manage_users.html", user=session, users=users, canteens=canteens, ngos=ngos)
@@ -671,4 +701,4 @@ def ngo_record_beneficiaries():
 # Run App
 # -------------------------
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=os.getenv("FLASK_DEBUG", "0") == "1", port=int(os.getenv("PORT", "5000")))
